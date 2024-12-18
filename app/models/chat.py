@@ -35,3 +35,15 @@ class ChatMessage(BaseModel):
 class ChatHistory(BaseModel):
     """Collection de messages formant une conversation"""
     messages: List[ChatMessage]
+
+from pydantic import BaseModel, Field
+from typing import List
+
+class SummaryRequest(BaseModel):
+    text: str
+    max_length: Optional[int] = 1000
+
+class SummaryResponse(BaseModel):
+    full_summary: str
+    bullet_points: List[str]
+    one_liner: str
