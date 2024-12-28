@@ -8,15 +8,18 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from services.memory import InMemoryHistory
 import os
 from typing import List, Dict, Optional
+
+from services.mongo_services import MongoService
+from core.config import settings  
 
 class LLMService:
 
     def __init__(self):
-        # Configuration existante...
         self.mongo_service = MongoService()
+        self.llm = ChatOpenAI(api_key=settings.openai_api_key) 
+
     async def generate_response(self,
         message: str,
         session_id: str) -> str:
