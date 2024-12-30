@@ -1,4 +1,3 @@
-# Dans services/tools.py
 from langchain.tools import Tool
 from langchain.chains import LLMChain
 from langchain.agents import AgentExecutor, ZeroShotAgent

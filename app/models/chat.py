@@ -6,6 +6,8 @@ Inclut les modèles du TP1 et les nouveaux modèles pour le TP2
 from typing import Dict, List, Optional
 from pydantic import BaseModel
 
+from services.llm_service import LLMService
+
 # ---- Modèles du TP1 ----
 class ChatRequestTP1(BaseModel):
     """Requête de base pour une conversation sans contexte"""
@@ -37,7 +39,7 @@ class ChatHistory(BaseModel):
     messages: List[ChatMessage]
 
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
 
 class SummaryRequest(BaseModel):
     text: str
@@ -47,3 +49,23 @@ class SummaryResponse(BaseModel):
     full_summary: str
     bullet_points: List[str]
     one_liner: str
+
+from fastapi import APIRouter, HTTPException
+
+router = APIRouter()
+
+@router.post("/summarize", response_model=SummaryResponse)
+async def summarize_text(request: SummaryRequest):
+    try:
+        summary = await LLMService.generate_summary(request.text)
+        return SummaryResponse(**summary)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/assistant/tool", response_model=ChatResponse)
+async def use_tool(request: ChatRequestTP2):
+    try:
+        response = await LLMService.process_with_tools(request.message)
+        return ChatResponse(response=response)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
