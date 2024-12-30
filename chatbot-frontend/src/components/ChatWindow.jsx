@@ -1,5 +1,12 @@
 import { useEffect, useRef } from 'react';
 import Message from './Message';
+/**
+ * ChatWindow component renders a list of chat messages and automatically scrolls to the bottom when new messages are added.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.messages - An array of message objects to be displayed in the chat window.
+ * @returns {JSX.Element} The rendered chat window component.
+ */
 const ChatWindow = ({ messages }) => {
     const messagesEndRef = useRef(null);
     const scrollToBottom = () => {

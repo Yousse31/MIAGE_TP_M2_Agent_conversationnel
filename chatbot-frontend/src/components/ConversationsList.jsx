@@ -1,3 +1,13 @@
+/**
+ * ConversationsList component renders a list of conversation sessions.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array<string>} props.sessions - An array of session identifiers.
+ * @param {string} props.currentSession - The identifier of the current session.
+ * @param {Function} props.onSessionChange - Callback function to handle session change.
+ *
+ * @returns {JSX.Element} The rendered ConversationsList component.
+ */
 const ConversationsList = ({ sessions, currentSession, onSessionChange }) => {
     return (
         <div className="w-64 border-r p-4 hidden md:block">

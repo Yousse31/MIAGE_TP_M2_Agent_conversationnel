@@ -1,4 +1,13 @@
 import { useState } from 'react';
+/**
+ * MessageInput component allows users to type and send messages.
+ *
+ * @param {Object} props - The component props.
+ * @param {function} props.onSendMessage - Function to call when a message is sent.
+ * @param {boolean} props.isLoading - Indicates if a message is currently being sent.
+ *
+ * @returns {JSX.Element} The rendered MessageInput component.
+ */
 const MessageInput = ({ onSendMessage, isLoading }) => {
     const [message, setMessage] = useState('');
     const handleSubmit = (e) => {

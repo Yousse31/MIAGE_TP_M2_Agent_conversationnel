@@ -6,6 +6,47 @@ import Loader from './components/Loader';
 import ErrorNotification from './components/ErrorNotification';
 import { chatApi } from './services/api';
 
+/**
+ * The main application component that handles chat sessions and messages.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @example
+ * <App />
+ *
+ * @typedef {Object} Message
+ * @property {string} role - The role of the message sender (e.g., 'user', 'assistant').
+ * @property {string} content - The content of the message.
+ *
+ * @typedef {Object} Session
+ * @property {string} id - The unique identifier for the session.
+ *
+ * @typedef {Object} ChatApi
+ * @property {Function} getAllSessions - Fetches all chat sessions.
+ * @property {Function} getHistory - Fetches the message history for a given session.
+ * @property {Function} sendMessage - Sends a message to the chat API.
+ *
+ * @typedef {Object} Props
+ * @property {ChatApi} chatApi - The chat API object with methods to interact with the backend.
+ *
+ * @param {Props} props - The props for the component.
+ *
+ * @property {Array<Message>} messages - The list of messages in the current session.
+ * @property {Function} setMessages - The state setter for messages.
+ * @property {Array<Session>} sessions - The list of chat sessions.
+ * @property {Function} setSessions - The state setter for sessions.
+ * @property {string|null} currentSession - The current chat session ID.
+ * @property {Function} setCurrentSession - The state setter for the current session.
+ * @property {boolean} isLoading - The loading state for sending messages.
+ * @property {Function} setIsLoading - The state setter for the loading state.
+ * @property {string|null} error - The error message, if any.
+ * @property {Function} setError - The state setter for the error message.
+ *
+ * @function loadSessions - Loads all chat sessions from the API.
+ * @function loadHistory - Loads the message history for the current session from the API.
+ * @function handleSendMessage - Sends a message to the chat API and updates the message list.
+ */
 function App() {
     const [messages, setMessages] = useState([]);
     const [sessions, setSessions] = useState([]);
