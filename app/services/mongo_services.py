@@ -29,7 +29,11 @@ class MongoService:
         """Récupère l'historique d'une conversation"""
         conversation = await self.conversations.find_one({"session_id": session_id})
         if conversation:
-            return conversation.get("messages", [])
+            messages = conversation.get("messages", [])
+            for message in messages:
+                if "timestamp" in message and isinstance(message["timestamp"], datetime):
+                    message["timestamp"] = message["timestamp"].isoformat()
+            return messages
         return []
     
     async def delete_conversation(self, session_id: str) -> bool:
