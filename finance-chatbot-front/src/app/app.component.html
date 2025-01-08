@@ -1,0 +1,19 @@
+<div class="app-container">
+  <header class="app-header">
+    <h1>{{ title }}</h1>
+  </header>
+
+  <main class="app-main flex">
+    <!-- Loader -->
+    <app-loader *ngIf="isLoading"></app-loader>
+
+    <div class="flex-1">
+      <app-chat-window [messages]="messages"></app-chat-window>
+      <app-message-input (sendMessage)="handleSendMessage($event)"></app-message-input>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <p>&copy; 2025 Finance Chatbot</p>
+  </footer>
+</div>
