@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 from models.conversation import Conversation, Message
 from core.config import settings
 
@@ -46,3 +46,25 @@ class MongoService:
         cursor = self.conversations.find({}, {"session_id": 1})
         sessions = await cursor.to_list(length=None)
         return [session["session_id"] for session in sessions]
+
+    async def get_category_prompt(self, label: str) -> Optional[Dict[str, str]]:
+        """Récupère le prompt d'une catégorie spécifique"""
+        category = await self.db["Categories"].find_one({"label": label})
+        if category:
+            return {"label": category["label"], "description": category["description"]}
+        return None
+    
+    async def get_user_accounts(self, user_id: str) -> List[Dict[str, Any]]:
+        """Récupère les comptes associés à un utilisateur"""
+        accounts = await self.db["Comptes"].find({"userId": user_id}).to_list(length=None)
+        return [
+            {
+                "_id": str(acc["_id"]),
+                "userId": str(acc["userId"]),
+                "date_ouverture": acc["date_ouverture"].isoformat(),
+                "montant": acc["montant"],
+                "compte": acc["compte"],
+                "type": acc["type"]
+            }
+            for acc in accounts
+        ]

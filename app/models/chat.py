@@ -38,6 +38,13 @@ class ChatHistory(BaseModel):
     """Collection de messages formant une conversation"""
     messages: List[ChatMessage]
 
+class ChatRequestWithCategory(BaseModel):
+    """Requête pour une conversation avec catégorie"""
+    message: str
+    session_id: str
+    category_label: str
+    user_id: str
+
 from pydantic import BaseModel, Field
 from typing import List, Optional
 

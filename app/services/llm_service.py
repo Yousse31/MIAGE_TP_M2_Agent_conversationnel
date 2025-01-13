@@ -55,6 +55,45 @@ class LLMService:
         await self.mongo_service.save_message(session_id, "assistant", response_text)
         return response_text
     
+    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str) -> str:
+        """Génère une réponse en utilisant un prompt spécifique à une catégorie et les comptes utilisateur"""
+        # Récupération du prompt de la catégorie
+        category_prompt = await self.mongo_service.get_category_prompt(category_label)
+        if not category_prompt:
+            raise ValueError(f"Catégorie '{category_label}' non trouvée")
+
+        # Récupération de l'historique depuis MongoDB
+        history = await self.mongo_service.get_conversation_history(session_id)
+
+        # Conversion de l'historique en messages LangChain
+        messages = [SystemMessage(content=category_prompt["description"])]
+        for msg in history:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+        # Ajout du nouveau message
+        messages.append(HumanMessage(content=message))
+
+        # Si la catégorie est 'conseil', récupérer les comptes utilisateur
+        if category_label == 'conseil':
+            user_accounts = await self.mongo_service.get_user_accounts(user_id)
+            accounts_summary = "\n".join([
+                f"Compte {acc['compte']} ({acc['type']}): {acc['montant']} EUR, ouvert le {acc['date_ouverture']}"
+                for acc in user_accounts
+            ])
+            messages.append(SystemMessage(content=f"Voici les comptes de l'utilisateur:\n{accounts_summary}"))
+
+        # Génération de la réponse
+        response = await self.llm.agenerate([messages])
+        response_text = response.generations[0][0].text
+
+        # Sauvegarde des messages dans MongoDB
+        await self.mongo_service.save_message(session_id, "user", message)
+        await self.mongo_service.save_message(session_id, "assistant", response_text)
+        return response_text
+
     async def get_conversation_history(self, session_id: str) -> List[Dict[str, str]]:
         """Récupère l'historique depuis MongoDB"""
         return await self.mongo_service.get_conversation_history(session_id)

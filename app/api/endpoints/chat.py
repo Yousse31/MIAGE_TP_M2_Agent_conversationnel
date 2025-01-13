@@ -4,7 +4,7 @@ Routes FastAPI pour le chatbot
 Inclut les endpoints du TP1 et du TP2
 """
 from fastapi import APIRouter, HTTPException, Body
-from models.chat import ChatRequestTP1, ChatRequestTP2, ChatRequestWithContext, ChatResponse
+from models.chat import ChatRequestTP1, ChatRequestTP2, ChatRequestWithCategory, ChatRequestWithContext, ChatResponse
 from services.llm_service import LLMService
 from typing import Dict, List
 import uuid
@@ -25,13 +25,15 @@ async def chat_simple(request: ChatRequestTP1) -> ChatResponse:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/chat/with-context", response_model=ChatResponse)
-async def chat_with_context(request: ChatRequestWithContext) -> ChatResponse:
-    """Endpoint avec contexte du TP1"""
+@router.post("/chat/with-category", response_model=ChatResponse)
+async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
+    """Endpoint pour une conversation avec catégorie"""
     try:
-        response = await llm_service.generate_response(
+        response = await llm_service.generate_response_with_category(
             message=request.message,
-            context=request.context
+            session_id=request.session_id,
+            category_label=request.category_label,
+            user_id=request.user_id
         )
         return ChatResponse(response=response)
     except Exception as e:
@@ -92,6 +94,19 @@ async def chat_rag(request: ChatRequestTP2) -> ChatResponse:
             message=request.message,
             session_id=request.session_id,
             use_rag=True
+        )
+        return ChatResponse(response=response)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/chat/with-category", response_model=ChatResponse)
+async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
+    """Endpoint pour une conversation avec catégorie"""
+    try:
+        response = await llm_service.generate_response_with_category(
+            message=request.message,
+            session_id=request.session_id,
+            category_label=request.category_label
         )
         return ChatResponse(response=response)
     except Exception as e:
