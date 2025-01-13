@@ -1,0 +1,42 @@
+.fixed {
+    position: fixed;
+  }
+  
+  .top-4 {
+    top: 1rem;
+  }
+  
+  .right-4 {
+    right: 1rem;
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+  
+  .border {
+    border-width: 1px;
+  }
+  
+  .border-red-400 {
+    border-color: #f87171;
+  }
+  
+  .text-red-700 {
+    color: #b91c1c;
+  }
+  
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  

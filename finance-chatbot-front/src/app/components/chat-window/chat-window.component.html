@@ -1,0 +1,23 @@
+<div class="flex-1 overflow-y-auto p-4">
+    <div
+      *ngFor="let message of messages; let i = index"
+      [ngClass]="{
+        'justify-end': message.role === 'user',
+        'justify-start': message.role !== 'user'
+      }"
+      class="flex mb-4"
+    >
+      <div
+        [ngClass]="{
+          'bg-blue-500 text-white': message.role === 'user',
+          'bg-gray-100 text-gray-800': message.role !== 'user'
+        }"
+        class="rounded-lg px-4 py-2 max-w-[70%]"
+      >
+        {{ message.content }}
+      </div>
+    </div>
+    <!-- Référence à la fin des messages -->
+    <div #messagesEnd></div>
+  </div>
+  
