@@ -6,12 +6,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./conversations-list.component.css'],
 })
 export class ConversationsListComponent {
-  // Propriétés passées par le parent
   @Input() sessions: string[] = []; // Liste des sessions
   @Input() currentSession: string = ''; // Session actuelle
-
-  // Événement pour signaler un changement de session
   @Output() sessionChange = new EventEmitter<string>();
+
+  isSidebarOpen = false; // État de la sidebar
+
+  /**
+   * Méthode pour basculer l'état de la sidebar.
+   */
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
 
   /**
    * Méthode pour gérer le changement de session.
