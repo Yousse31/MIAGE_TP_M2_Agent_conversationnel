@@ -33,7 +33,9 @@ async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
             message=request.message,
             session_id=request.session_id,
             category_label=request.category_label,
-            user_id=request.user_id
+            user_id=request.user_id,
+            account=request.account,
+            amount=request.amount
         )
         return ChatResponse(response=response)
     except Exception as e:
