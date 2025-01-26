@@ -55,7 +55,7 @@ class LLMService:
         await self.mongo_service.save_message(session_id, "assistant", response_text)
         return response_text
     
-    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str) -> str:
+    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str, account: Optional[str] = None, amount: Optional[float] = None) -> str:
         """Génère une réponse en utilisant un prompt spécifique à une catégorie et les comptes utilisateur"""
         # Récupération du prompt de la catégorie
         category_prompt = await self.mongo_service.get_category_prompt(category_label)
@@ -78,6 +78,23 @@ class LLMService:
 
         # Si la catégorie est 'conseil', récupérer les comptes utilisateur
         if category_label == 'conseil':
+            user_accounts = await self.mongo_service.get_user_accounts(user_id)
+            accounts_summary = "\n".join([
+                f"Compte {acc['compte']} ({acc['type']}): {acc['montant']} EUR, ouvert le {acc['date_ouverture']}"
+                for acc in user_accounts
+            ])
+            messages.append(SystemMessage(content=f"Voici les comptes de l'utilisateur:\n{accounts_summary}"))
+
+        # Si la catégorie est 'operation', effectuer l'opération bancaire
+        if category_label == 'operation' and account and amount:
+            success = await self.mongo_service.perform_bank_operation(user_id, account, amount)
+            if success:
+                messages.append(SystemMessage(content=f"L'opération de {amount} EUR sur le compte {account} a été effectuée avec succès."))
+            else:
+                messages.append(SystemMessage(content=f"Échec de l'opération de {amount} EUR sur le compte {account}."))
+
+        # Si la catégorie est 'investissement', répondre uniquement aux questions liées à l'investissement
+        if category_label == 'investissement':
             user_accounts = await self.mongo_service.get_user_accounts(user_id)
             accounts_summary = "\n".join([
                 f"Compte {acc['compte']} ({acc['type']}): {acc['montant']} EUR, ouvert le {acc['date_ouverture']}"

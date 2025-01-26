@@ -68,3 +68,11 @@ class MongoService:
             }
             for acc in accounts
         ]
+
+    async def perform_bank_operation(self, user_id: str, account: str, amount: float) -> bool:
+        """Effectue une opération bancaire sur un compte utilisateur"""
+        result = await self.db["Comptes"].update_one(
+            {"userId": user_id, "compte": account},
+            {"$inc": {"montant": amount}}
+        )
+        return result.modified_count > 0
