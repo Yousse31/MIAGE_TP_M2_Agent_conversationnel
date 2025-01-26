@@ -1,0 +1,65 @@
+.app-container {
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+  }
+  
+  .sidenav-toggle {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #8B7FD4;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+  }
+  
+  .sidenav {
+    position: fixed;
+    left: -300px;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: #f3f0ff;
+    transition: 0.3s;
+    z-index: 99;
+    padding: 80px 20px 20px;
+  }
+  
+  .sidenav.open {
+    left: 0;
+  }
+  
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+  }
+
+  .sidenav h2 {
+    color: #C6A657;
+    font-size: 1.8rem;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .chat-title {
+    color: #C6A657;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    background-color: #f3f0ff;
+  }
+  
+  .chat-box {
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }

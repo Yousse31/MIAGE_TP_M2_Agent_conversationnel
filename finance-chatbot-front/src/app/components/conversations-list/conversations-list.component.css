@@ -1,77 +1,25 @@
-/* Sidebar container */
-.sidebar {
-  transition: transform 0.3s ease-in-out;
+/* conversations-list.component.css */
+.conversations-list {
+  padding: 20px;
 }
 
-/* Bouton pour ouvrir/fermer la sidebar */
-.toggle-sidebar-btn {
-  display: block;
-  margin: 0 auto;
+.session-btn {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  text-align: left;
+  background: white;
+  border: none;
+  border-radius: 8px;
+  transition: 0.3s;
   cursor: pointer;
 }
 
-.hidden {
-  display: none;
+.session-btn:hover {
+  background: #e6e3ff;
 }
 
-.block {
-  display: block;
-}
-
-.border-r {
-  border-right: 1px solid #e5e7eb;
-}
-
-.p-4 {
-  padding: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.space-y-2 > * + * {
-  margin-top: 0.5rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-
-.bg-blue-100 {
-  background-color: #ebf8ff;
-}
-
-.text-blue-800 {
-  color: #2b6cb0;
-}
-
-.hover\:bg-gray-100:hover {
-  background-color: #f7fafc;
+.session-btn.active {
+  background: #8B7FD4;
+  color: white;
 }
