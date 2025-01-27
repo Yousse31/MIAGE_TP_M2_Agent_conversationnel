@@ -7,8 +7,7 @@ import { ChatRequest, ChatResponse, ChatMessage } from '../models/chat.interface
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'http://localhost:8000'; // Ajustez selon votre configuration
-  private userId = 'test-user'; // À remplacer par une vraie gestion d'utilisateur
+  private apiUrl = 'http://localhost:8000/chat'; // Ajout du préfixe /chat
 
   constructor(private http: HttpClient) {}
 
@@ -17,10 +16,11 @@ export class ChatService {
       message,
       session_id: sessionId,
       category_label: categoryLabel,
-      user_id: this.userId
+      user_id: 'test-user' // À remplacer par une vraie gestion d'utilisateur
     };
 
-    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/with-category`, request);
+    // Utilisation de la route correcte /chat/with-category
+    return this.http.post<ChatResponse>(`${this.apiUrl}/with-category`, request);
   }
 
   getHistory(sessionId: string): Observable<ChatMessage[]> {
