@@ -69,5 +69,48 @@ C:.
 
 ## Explication des Composants principaux
 
+### 1. Main Application (main.py)
+```
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+```
+- Point d'entrée de l'application
+- Configure FastAPI et les middlewares
+- Initialise les routes
+### 2. Modèles (models/chat.py)
+```
+class ChatRequest(BaseModel):
+    message: str
+```
+- Définit la structure des données entrantes/sortantes
+- Utilise Pydantic pour la validation des données
+- Version simple pour débuter, extensible pour le contexte
+### 3. Service LLM (services/llm_service.py)
+```
+class LLMService:
+    def __init__(self):
+        self.llm = ChatOpenAI(...)
+```
+- Gère l'interaction avec le modèle de langage
+- Configure le client OpenAI
+- Traite les messages et le contexte
+### 4. Router API (api/router.py)
+```
+@router.post("/chat")
+async def chat(request: ChatRequest) -> ChatResponse:
+```
+- Définit les endpoints de l'API
+- Gère les requêtes HTTP
+- Valide les données entrantes
 
+## Structure de l'API
 
+### Endpoints Disponibles
+**/chat/with-category** : Version avancée avec gestion de la catégorie
+**/history/{session_id}** : Récupération de l'historique d'une conversation
+
+### Flux de Données
+- 1. La requête arrive sur l'endpoint
+- 2. Les modèles Pydantic valident les données
+- 3. Le service LLM traite la demande
+- 4. La réponse est formatée et renvoyée vers l'utilisateur
