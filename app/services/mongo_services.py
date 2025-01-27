@@ -15,13 +15,13 @@ class MongoService:
         """Sauvegarde un nouveau message dans une conversation"""
         message = Message(role=role, content=content)
         result = await self.conversations.update_one(
-        {"session_id": session_id},
-        {
-        "$push": {"messages": message.model_dump()},
-        "$set": {"updated_at": datetime.utcnow()},
-        "$setOnInsert": {"created_at": datetime.utcnow()}
-        },
-        upsert=True
+            {"session_id": session_id},
+            {
+                "$push": {"messages": message.model_dump()},
+                "$set": {"updated_at": datetime.utcnow()},
+                "$setOnInsert": {"created_at": datetime.utcnow()}
+            },
+            upsert=True
         )
         return result.modified_count > 0 or result.upserted_id is not None
     

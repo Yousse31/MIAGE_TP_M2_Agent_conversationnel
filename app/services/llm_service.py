@@ -11,6 +11,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 import os
 from typing import List, Dict, Optional, Any
+import uuid
 
 from services.memory import EnhancedMemoryHistory
 from services.mongo_services import MongoService
@@ -55,8 +56,12 @@ class LLMService:
         await self.mongo_service.save_message(session_id, "assistant", response_text)
         return response_text
     
-    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str) -> str:
+    async def generate_response_with_category(self, message: str, session_id: Optional[str], category_label: str, user_id: str) -> str:
         """Génère une réponse en utilisant un prompt spécifique à une catégorie et les comptes utilisateur"""
+        # Générer un nouveau session_id si non fourni
+        if not session_id:
+            session_id = str(uuid.uuid4())
+
         # Récupération du prompt de la catégorie
         category_prompt = await self.mongo_service.get_category_prompt(category_label)
         if not category_prompt:

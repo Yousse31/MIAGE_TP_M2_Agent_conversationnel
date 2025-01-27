@@ -41,7 +41,7 @@ class ChatHistory(BaseModel):
 class ChatRequestWithCategory(BaseModel):
     """Requête pour une conversation avec catégorie"""
     message: str
-    session_id: str
+    session_id: Optional[str] = None
     category_label: str
     user_id: str
     # account: Optional[str] = None  # Supprimé
