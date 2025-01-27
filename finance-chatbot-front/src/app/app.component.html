@@ -14,8 +14,10 @@
         (categorySelected)="onCategorySelected($event)">
       </app-category-selector>
       <app-chat-window 
-        *ngIf="selectedCategory" 
-        [messages]="messages">
+        *ngIf="selectedCategory"
+        [messages]="messages"
+        [selectedCategory]="selectedCategory"
+        (onSendMessage)="handleSendMessage($event)">  
       </app-chat-window>
     </div>
   </main>
