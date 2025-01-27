@@ -102,7 +102,7 @@ class LLMService:
                     for acc in user_accounts
                 ])
                 system_message_content += f"\nVoici les comptes de l'utilisateur:\n{accounts_summary}"
-                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération : 'Montant: <montant> EUR, Compte: <compte>'"
+                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération avec le montant final : 'Montant: <montant> EUR, Compte: <compte>'"
 
         # Mise à jour du SystemMessage avec le contenu combiné
         messages[0] = SystemMessage(content=system_message_content)
@@ -129,7 +129,7 @@ class LLMService:
             current_balance = account_info['montant']
 
             # Vérification que le montant reste positif après l'opération
-            if current_balance + amount < 0:
+            if amount < 0:
                 raise ValueError(f"Le montant de l'opération ({amount} EUR) sur le compte {account} entraînerait un solde négatif.")
 
             # Effectuer l'opération bancaire

@@ -73,6 +73,6 @@ class MongoService:
         """Effectue une opération bancaire sur un compte utilisateur"""
         result = await self.db["Comptes"].update_one(
             {"userId": user_id, "compte": account},
-            {"$inc": {"montant": amount}}
+            {"$set": {"montant": amount}}
         )
         return result.modified_count > 0
