@@ -2,16 +2,21 @@
   <button class="sidenav-toggle" (click)="toggleSidenav()">
     <span class="material-icons">menu</span>
   </button>
-  
   <div class="sidenav" [class.open]="sidenavOpen">
     <h2>Conversations</h2>
     <app-conversations-list></app-conversations-list>
   </div>
-
   <main class="main-content">
     <h1 class="chat-title">Finance Chatbot</h1>
     <div class="chat-box">
-      <app-chat-window [messages]="messages"></app-chat-window>
+      <app-category-selector 
+        *ngIf="!selectedCategory" 
+        (categorySelected)="onCategorySelected($event)">
+      </app-category-selector>
+      <app-chat-window 
+        *ngIf="selectedCategory" 
+        [messages]="messages">
+      </app-chat-window>
     </div>
   </main>
 </div>
