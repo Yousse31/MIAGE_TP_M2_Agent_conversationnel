@@ -3,3 +3,5 @@ venv/
 __pycache__/
 *.py[cod]
 *.json
+package.json
+package-lock.json
