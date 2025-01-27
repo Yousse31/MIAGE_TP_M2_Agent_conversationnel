@@ -33,9 +33,9 @@ async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
             message=request.message,
             session_id=request.session_id,
             category_label=request.category_label,
-            user_id=request.user_id,
-            account=request.account,
-            amount=request.amount
+            user_id=request.user_id
+            # account=request.account  # Supprimé
+            # amount=request.amount  # Supprimé
         )
         return ChatResponse(response=response)
     except Exception as e:
@@ -96,19 +96,6 @@ async def chat_rag(request: ChatRequestTP2) -> ChatResponse:
             message=request.message,
             session_id=request.session_id,
             use_rag=True
-        )
-        return ChatResponse(response=response)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/chat/with-category", response_model=ChatResponse)
-async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
-    """Endpoint pour une conversation avec catégorie"""
-    try:
-        response = await llm_service.generate_response_with_category(
-            message=request.message,
-            session_id=request.session_id,
-            category_label=request.category_label
         )
         return ChatResponse(response=response)
     except Exception as e:

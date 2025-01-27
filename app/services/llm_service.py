@@ -55,7 +55,7 @@ class LLMService:
         await self.mongo_service.save_message(session_id, "assistant", response_text)
         return response_text
     
-    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str, account: Optional[str] = None, amount: Optional[float] = None) -> str:
+    async def generate_response_with_category(self, message: str, session_id: str, category_label: str, user_id: str) -> str:
         """Génère une réponse en utilisant un prompt spécifique à une catégorie et les comptes utilisateur"""
         # Récupération du prompt de la catégorie
         category_prompt = await self.mongo_service.get_category_prompt(category_label)
@@ -85,13 +85,47 @@ class LLMService:
             ])
             messages.append(SystemMessage(content=f"Voici les comptes de l'utilisateur:\n{accounts_summary}"))
 
-        # Si la catégorie est 'operation', effectuer l'opération bancaire
-        if category_label == 'operation' and account and amount:
-            success = await self.mongo_service.perform_bank_operation(user_id, account, amount)
-            if success:
-                messages.append(SystemMessage(content=f"L'opération de {amount} EUR sur le compte {account} a été effectuée avec succès."))
-            else:
-                messages.append(SystemMessage(content=f"Échec de l'opération de {amount} EUR sur le compte {account}."))
+        # Si la catégorie est 'operation', déterminer le montant à partir du LLM
+        if category_label == 'operation':
+            user_accounts = await self.mongo_service.get_user_accounts(user_id)
+            accounts_summary = "\n".join([
+                f"Compte {acc['compte']} ({acc['type']}): {acc['montant']} EUR"
+                for acc in user_accounts
+            ])
+            messages.append(SystemMessage(content=f"Voici les comptes de l'utilisateur:\n{accounts_summary}"))
+            messages.append(SystemMessage(content="Veuillez répondre dans le format suivant pour chaque opération : 'Montant: <montant> EUR, Compte: <compte>'"))
+
+            # Génération de la réponse pour obtenir les montants et les comptes
+            response = await self.llm.agenerate([messages])
+            response_text = response.generations[0][0].text
+
+            # Extraction des montants et des comptes de la réponse
+            operations = response_text.strip().split('\n')
+            for operation in operations:
+                try:
+                    amount_str, account_str = operation.strip().split(',')
+                    amount = float(amount_str.split(':')[1].strip().split()[0])
+                    account = account_str.split(':')[1].strip()
+                except (ValueError, IndexError):
+                    raise ValueError(f"Impossible d'extraire le montant ou le compte de l'opération: {operation}")
+
+                # Vérification que le compte existe
+                account_info = next((acc for acc in user_accounts if acc['compte'] == account), None)
+                if not account_info:
+                    raise ValueError(f"Compte '{account}' non trouvé pour l'utilisateur '{user_id}'")
+
+                current_balance = account_info['montant']
+
+                # Vérification que le montant reste positif après l'opération
+                if current_balance + amount < 0:
+                    raise ValueError(f"Le montant de l'opération ({amount} EUR) sur le compte {account} entraînerait un solde négatif.")
+
+                # Effectuer l'opération bancaire
+                success = await self.mongo_service.perform_bank_operation(user_id, account, amount)
+                if success:
+                    messages.append(SystemMessage(content=f"L'opération de {amount} EUR sur le compte {account} a été effectuée avec succès."))
+                else:
+                    messages.append(SystemMessage(content=f"Échec de l'opération de {amount} EUR sur le compte {account}."))
 
         # Si la catégorie est 'investissement', répondre uniquement aux questions liées à l'investissement
         if category_label == 'investissement':

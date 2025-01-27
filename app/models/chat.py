@@ -44,8 +44,8 @@ class ChatRequestWithCategory(BaseModel):
     session_id: str
     category_label: str
     user_id: str
-    account: Optional[str] = None
-    amount: Optional[float] = None
+    # account: Optional[str] = None  # Supprimé
+    # amount: Optional[float] = None  # Supprimé
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
