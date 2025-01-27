@@ -124,7 +124,7 @@ class LLMService:
             # Vérification que le compte existe
             account_info = next((acc for acc in user_accounts if acc['compte'] == account), None)
             if not account_info:
-                raise ValueError(f"Compte '{account}' non trouvé pour l'utilisateur '{user_id}'")
+                raise ValueError(f"Compte '{account}' non trouvé pour l'utilisateur '{user_id}'. Montant: {amount} EUR, Compte: {account}")
 
             current_balance = account_info['montant']
 
