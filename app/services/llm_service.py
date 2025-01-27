@@ -102,7 +102,7 @@ class LLMService:
                     for acc in user_accounts
                 ])
                 system_message_content += f"\nVoici les comptes de l'utilisateur:\n{accounts_summary}"
-                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération : 'Montant: <montant> EUR, Compte: <compte>'"
+                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération le montant final : 'Montant: <montant> EUR, Compte: <compte>'"
 
             # Mise à jour du SystemMessage avec le contenu combiné
             messages[0] = SystemMessage(content=system_message_content)
