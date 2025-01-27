@@ -29,16 +29,17 @@ async def chat_simple(request: ChatRequestTP1) -> ChatResponse:
 async def chat_with_category(request: ChatRequestWithCategory) -> ChatResponse:
     """Endpoint pour une conversation avec catégorie"""
     try:
+        print(f"Received request: {request}")  # Log de la requête
         response = await llm_service.generate_response_with_category(
             message=request.message,
             session_id=request.session_id,
             category_label=request.category_label,
             user_id=request.user_id
-            # account=request.account  # Supprimé
-            # amount=request.amount  # Supprimé
         )
+        print(f"Generated response: {response}")  # Log de la réponse
         return ChatResponse(response=response)
     except Exception as e:
+        print(f"Error in chat_with_category: {str(e)}")  # Log de l'erreur
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chat", response_model=ChatResponse)

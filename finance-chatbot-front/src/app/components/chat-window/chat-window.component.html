@@ -13,10 +13,10 @@
   <div class="input-wrapper">
     <input type="text" 
            [(ngModel)]="message" 
-           placeholder="Type your message..."
-           (keyup.enter)="sendMessage()">
+           (keyup.enter)="sendMessage()"
+           placeholder="Type your message...">
     <button class="send-btn" (click)="sendMessage()">
-      <span class="material-icons">send</span>
+      <span class="material-icons">➤</span>
     </button>
   </div>
 </div>

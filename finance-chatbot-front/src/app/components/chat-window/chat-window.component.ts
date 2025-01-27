@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { ChatCategory } from '../../models/chat.interface';
 
@@ -10,32 +10,16 @@ import { ChatCategory } from '../../models/chat.interface';
 export class ChatWindowComponent {
   @Input() messages: any[] = [];
   @Input() selectedCategory?: ChatCategory;
-  message: string = '';
-  sessionId: string;
+  @Output() onSendMessage = new EventEmitter<string>(); // Renommé pour plus de clarté
   
-  constructor(private chatService: ChatService) {
-    this.sessionId = this.chatService.generateSessionId();
-  }
+  message: string = '';
 
   sendMessage(): void {
-    if (!this.message.trim() || !this.selectedCategory) return;
+    console.log('Send message called');
+    if (!this.message.trim()) return;
     
-    const currentMessage = this.message;
-    this.messages.push({ role: 'user', content: currentMessage });
+    console.log('Emitting message:', this.message);
+    this.onSendMessage.emit(this.message);
     this.message = '';
-
-    this.chatService.sendMessage(currentMessage, this.sessionId, this.selectedCategory)
-      .subscribe({
-        next: (response) => {
-          this.messages.push({ role: 'assistant', content: response.response });
-        },
-        error: (error) => {
-          console.error('Erreur:', error);
-          this.messages.push({
-            role: 'assistant',
-            content: 'Une erreur est survenue.'
-          });
-        }
-      });
   }
 }

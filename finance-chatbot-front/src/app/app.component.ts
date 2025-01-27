@@ -33,22 +33,24 @@ export class AppComponent {
   }
 
   handleSendMessage(message: string) {
+    console.log('handleSendMessage called in app.component with:', message);
     if (!message.trim() || !this.selectedCategory) return;
     
     this.isLoading = true;
     this.messages.push({ role: 'user', content: message });
-
+  
     this.chatService.sendMessage(message, this.sessionId, this.selectedCategory)
       .subscribe({
         next: (response) => {
+          console.log('Received response from server:', response);
           this.messages.push({ role: 'assistant', content: response.response });
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Erreur lors de l\'envoi du message:', error);
+          console.error('Error from server:', error);
           this.messages.push({
             role: 'assistant',
-            content: 'Désolé, une erreur est survenue. Veuillez réessayer.'
+            content: 'Une erreur est survenue.'
           });
           this.isLoading = false;
         }
