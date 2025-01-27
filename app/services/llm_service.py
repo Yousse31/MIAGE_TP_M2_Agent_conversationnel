@@ -102,42 +102,42 @@ class LLMService:
                     for acc in user_accounts
                 ])
                 system_message_content += f"\nVoici les comptes de l'utilisateur:\n{accounts_summary}"
-                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération avec le montant final : 'Montant: <montant> EUR, Compte: <compte>'"
+                system_message_content += "\nVeuillez répondre dans le format suivant pour chaque opération : 'Montant: <montant> EUR, Compte: <compte>'"
 
-        # Mise à jour du SystemMessage avec le contenu combiné
-        messages[0] = SystemMessage(content=system_message_content)
+            # Mise à jour du SystemMessage avec le contenu combiné
+            messages[0] = SystemMessage(content=system_message_content)
 
-        # Génération de la réponse pour obtenir les montants et les comptes
-        response = await self.llm.agenerate([messages])
-        response_text = response.generations[0][0].text
+            # Génération de la réponse pour obtenir les montants et les comptes
+            response = await self.llm.agenerate([messages])
+            response_text = response.generations[0][0].text
 
-        # Extraction des montants et des comptes de la réponse
-        operations = response_text.strip().split('\n')
-        for operation in operations:
-            try:
-                amount_str, account_str = operation.strip().split(',')
-                amount = float(amount_str.split(':')[1].strip().split()[0])
-                account = account_str.split(':')[1].strip()
-            except (ValueError, IndexError):
-                raise ValueError(f"Impossible d'extraire le montant ou le compte de l'opération: {operation}")
+            # Extraction des montants et des comptes de la réponse
+            operations = response_text.strip().split('\n')
+            for operation in operations:
+                try:
+                    amount_str, account_str = operation.strip().split(',')
+                    amount = float(amount_str.split(':')[1].strip().split()[0])
+                    account = account_str.split(':')[1].strip()
+                except (ValueError, IndexError):
+                    raise ValueError(f"Impossible d'extraire le montant ou le compte de l'opération: {operation}")
 
-            # Vérification que le compte existe
-            account_info = next((acc for acc in user_accounts if acc['compte'] == account), None)
-            if not account_info:
-                raise ValueError(f"Compte '{account}' non trouvé pour l'utilisateur '{user_id}'. Montant: {amount} EUR, Compte: {account}")
+                # Vérification que le compte existe
+                account_info = next((acc for acc in user_accounts if acc['compte'] == account), None)
+                if not account_info:
+                    raise ValueError(f"Compte '{account}' non trouvé pour l'utilisateur '{user_id}'. Montant: {amount} EUR, Compte: {account}")
 
-            current_balance = account_info['montant']
+                current_balance = account_info['montant']
 
-            # Vérification que le montant reste positif après l'opération
-            if amount < 0:
-                raise ValueError(f"Le montant de l'opération ({amount} EUR) sur le compte {account} entraînerait un solde négatif.")
+                # Vérification que le montant reste positif après l'opération
+                if current_balance + amount < 0:
+                    raise ValueError(f"Le montant de l'opération ({amount} EUR) sur le compte {account} entraînerait un solde négatif.")
 
-            # Effectuer l'opération bancaire
-            success = await self.mongo_service.perform_bank_operation(user_id, account, amount)
-            if success:
-                messages.append(SystemMessage(content=f"L'opération de {amount} EUR sur le compte {account} a été effectuée avec succès."))
-            else:
-                messages.append(SystemMessage(content=f"Échec de l'opération de {amount} EUR sur le compte {account}."))
+                # Effectuer l'opération bancaire
+                success = await self.mongo_service.perform_bank_operation(user_id, account, amount)
+                if success:
+                    messages.append(SystemMessage(content=f"L'opération de {amount} EUR sur le compte {account} a été effectuée avec succès."))
+                else:
+                    messages.append(SystemMessage(content=f"Échec de l'opération de {amount} EUR sur le compte {account}."))
 
         # Si la catégorie est 'investissement', répondre uniquement aux questions liées à l'investissement
         if category_label == 'investissement':
