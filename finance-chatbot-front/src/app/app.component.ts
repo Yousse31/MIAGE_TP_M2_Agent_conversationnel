@@ -37,21 +37,11 @@ export class AppComponent {
   handleSendMessage(message: string) {
     console.log('handleSendMessage called in app.component with:', message);
     if (!message.trim() || !this.selectedCategory) return;
-  
+    
     this.isLoading = true;
     this.messages.push({ role: 'user', content: message });
   
-    // Construire la requête en ajoutant user_id uniquement si la catégorie est "opération"
-    const requestBody: any = {
-      message: message,
-      category_label: this.selectedCategory
-    };
-  
-    if (this.selectedCategory === ChatCategory.OPERATIONS) {
-      requestBody.user_id = "677e7d90c501a6ab02049eed"; // Ajout de l'identifiant utilisateur pour accès à ses comptes
-    }
-  
-    this.http.post('http://localhost:8000/chat/with-category', requestBody) // Envoi de la requête au serveur
+    this.chatService.sendMessage(message, this.sessionId, this.selectedCategory)
       .subscribe({
         next: (response: any) => {
           console.log('Réponse du serveur:', response);
@@ -67,8 +57,6 @@ export class AppComponent {
           this.isLoading = false;
         }
       });
-  
-    this.userMessage = '';  // Nettoyage du champ après envoi
   }
   
   

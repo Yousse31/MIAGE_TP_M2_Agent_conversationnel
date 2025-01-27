@@ -7,7 +7,7 @@ import { ChatRequest, ChatResponse, ChatMessage } from '../models/chat.interface
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'http://localhost:8000/chat/with-category';;
+  private apiUrl = 'http://localhost:8000';;
   constructor(private http: HttpClient) {}
 
   sendMessage(message: string, sessionId: string, categoryLabel: string): Observable<ChatResponse> {

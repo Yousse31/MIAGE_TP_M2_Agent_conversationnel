@@ -71,8 +71,13 @@ class MongoService:
 
     async def perform_bank_operation(self, user_id: str, account: str, amount: float) -> bool:
         """Effectue une opération bancaire sur un compte utilisateur"""
+        current_account = await self.db["Comptes"].find_one({"userId": user_id, "compte": account})
+        if not current_account:
+            return False
+        
+        new_amount = current_account["montant"] + amount
         result = await self.db["Comptes"].update_one(
             {"userId": user_id, "compte": account},
-            {"$set": {"montant": amount}}
+            {"$set": {"montant": new_amount}}
         )
         return result.modified_count > 0
