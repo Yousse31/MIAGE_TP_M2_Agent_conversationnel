@@ -8,7 +8,6 @@ import { ChatRequest, ChatResponse, ChatMessage } from '../models/chat.interface
 })
 export class ChatService {
   private apiUrl = 'http://localhost:8000';
-  
   constructor(private http: HttpClient) {}
 
   sendMessage(message: string, sessionId: string, categoryLabel: string): Observable<ChatResponse> {
@@ -16,7 +15,7 @@ export class ChatService {
       message,
       session_id: sessionId,
       category_label: categoryLabel,
-      user_id: 'test-user'
+      user_id: '677e7d90c501a6ab02049eed'
     };
 
     console.log('Sending request to:', `${this.apiUrl}/chat/with-category`);
