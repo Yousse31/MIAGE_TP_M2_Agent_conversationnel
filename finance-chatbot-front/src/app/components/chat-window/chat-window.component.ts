@@ -1,42 +1,42 @@
-import { Component, Input, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+// chat-window.component.ts
+import { Component, Input } from '@angular/core';
+import { ChatService } from '../../services/chat.service';
+import { ChatCategory } from '../../models/chat.interface';
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.css']
 })
-export class ChatWindowComponent implements AfterViewChecked {
-  @Input() messages: { role: string; content: string }[] = []; // Les messages passés en entrée
-  @ViewChild('messagesEnd') private messagesEnd!: ElementRef; // Référence à l'élément de fin
+export class ChatWindowComponent {
+  @Input() messages: any[] = [];
+  @Input() selectedCategory?: ChatCategory;
+  message: string = '';
+  
+  constructor(private chatService: ChatService) {}
 
-  message: string = ''; // Message saisi par l'utilisateur
-
-  // Défile automatiquement vers le bas à chaque mise à jour
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
-  }
-
-  private scrollToBottom(): void {
-    if (this.messagesEnd) {
-      this.messagesEnd.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  /**
-   * Méthode pour envoyer un message
-   */
   sendMessage(): void {
-    if (this.message.trim()) {
-      this.messages.push({ role: 'user', content: this.message }); // Ajoute le message à la liste
-      this.message = ''; // Réinitialise le champ de saisie
+    if (!this.message.trim() || !this.selectedCategory) return;
+    
+    this.messages.push({ role: 'user', content: this.message });
+    const currentMessage = this.message;
+    this.message = '';
 
-      // Simule une réponse de l'assistant après un délai
-      setTimeout(() => {
+    this.chatService.sendMessage(
+      currentMessage, 
+      'test-session', 
+      this.selectedCategory
+    ).subscribe({
+      next: (response) => {
+        this.messages.push({ role: 'assistant', content: response.response });
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
         this.messages.push({
           role: 'assistant',
-          content: `Vous avez dit : "${this.message}". Ceci est une réponse simulée.`
+          content: 'Une erreur est survenue.'
         });
-      }, 1000);
-    }
+      }
+    });
   }
 }
