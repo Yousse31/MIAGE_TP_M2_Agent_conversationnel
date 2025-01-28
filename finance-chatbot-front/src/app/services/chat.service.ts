@@ -7,7 +7,8 @@ import { ChatRequest, ChatResponse, ChatMessage } from '../models/chat.interface
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'http://localhost:8000';;
+  private apiUrl = 'http://localhost:8000';
+
   constructor(private http: HttpClient) {}
 
   sendMessage(message: string, sessionId: string, categoryLabel: string): Observable<ChatResponse> {
@@ -17,10 +18,8 @@ export class ChatService {
       category_label: categoryLabel,
       user_id: '677e7d90c501a6ab02049eed'
     };
-
     console.log('Sending request to:', `${this.apiUrl}/chat/with-category`);
     console.log('Request data:', request);
-
     return this.http.post<ChatResponse>(`${this.apiUrl}/chat/with-category`, request);
   }
 
@@ -30,5 +29,15 @@ export class ChatService {
 
   generateSessionId(): string {
     return crypto.randomUUID();
+  }
+
+  saveConversation(sessionId: string, category: string, messages: ChatMessage[]) {
+    const conversationData = {
+      sessionId,
+      category,
+      messages,
+      timestamp: new Date().toISOString()
+    };
+    console.log('Saving conversation:', conversationData);
   }
 }

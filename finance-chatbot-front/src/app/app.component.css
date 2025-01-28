@@ -63,3 +63,28 @@
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
+  .home-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #8B7FD4;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+  
+  .home-button:hover {
+    background: #7B6FC4;
+  }
+  
+  .home-button .material-icons {
+    font-size: 24px;
+  }

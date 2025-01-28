@@ -2,6 +2,9 @@
   <button class="sidenav-toggle" (click)="toggleSidenav()">
     <span class="material-icons">menu</span>
   </button>
+  <button class="home-button" *ngIf="selectedCategory" (click)="resetToCategories()">
+    <span class="material-icons">home</span>
+  </button>
   <div class="sidenav" [class.open]="sidenavOpen">
     <h2>Conversations</h2>
     <app-conversations-list></app-conversations-list>

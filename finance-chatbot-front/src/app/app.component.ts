@@ -34,6 +34,19 @@ export class AppComponent {
     ];
   }
 
+  resetToCategories() {
+    if (this.messages.length > 1) {
+      this.chatService.saveConversation(this.sessionId, this.selectedCategory!, this.messages);
+    }
+    
+    // Réinitialisation de l'état
+    this.selectedCategory = undefined;
+    this.messages = [
+      { role: 'assistant', content: 'Bonjour! Comment puis-je vous aider avec vos questions financières?' }
+    ];
+    this.sessionId = this.chatService.generateSessionId();
+  }
+
   handleSendMessage(message: string) {
     console.log('handleSendMessage called in app.component with:', message);
     if (!message.trim() || !this.selectedCategory) return;
